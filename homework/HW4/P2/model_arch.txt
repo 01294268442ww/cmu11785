@@ -1,0 +1,69 @@
+SpeechTransformer(
+  (encoder): CNN_LSTM_Enocder(
+    (embedding): Sequential(
+      (0): Conv1d(27, 54, kernel_size=(5,), stride=(1,), padding=(2,))
+      (1): BatchNorm1d(54, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Conv1d(54, 108, kernel_size=(5,), stride=(1,), padding=(2,))
+      (4): BatchNorm1d(108, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU(inplace=True)
+    )
+    (blistm): LSTM(108, 256, batch_first=True, dropout=0.3, bidirectional=True)
+    (pBLSTMs): Sequential(
+      (0): pBLSTM(
+        (blstm): LSTM(1024, 256, batch_first=True, bidirectional=True)
+      )
+      (1): LockedDropout()
+      (2): pBLSTM(
+        (blstm): LSTM(1024, 512, batch_first=True, bidirectional=True)
+      )
+      (3): LockedDropout()
+    )
+    (permute): PermuteBlock()
+  )
+  (proj): Linear(in_features=1024, out_features=512, bias=True)
+  (layernorm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+  (decoder): Decoder(
+    (dec_layers): ModuleList(
+      (0-2): 3 x DecoderLayer(
+        (mha1): MultiHeadAttention(
+          (w_qs): Linear(in_features=512, out_features=510, bias=True)
+          (w_ks): Linear(in_features=512, out_features=510, bias=True)
+          (w_vs): Linear(in_features=512, out_features=510, bias=True)
+          (attention): ScaledDotProductAttention(
+            (dropout): Dropout(p=0.2, inplace=False)
+            (softmax): Softmax(dim=-1)
+          )
+          (fc): Linear(in_features=510, out_features=512, bias=True)
+          (dropout): Dropout(p=0.2, inplace=False)
+        )
+        (mha2): MultiHeadAttention(
+          (w_qs): Linear(in_features=512, out_features=510, bias=True)
+          (w_ks): Linear(in_features=512, out_features=510, bias=True)
+          (w_vs): Linear(in_features=512, out_features=510, bias=True)
+          (attention): ScaledDotProductAttention(
+            (dropout): Dropout(p=0.2, inplace=False)
+            (softmax): Softmax(dim=-1)
+          )
+          (fc): Linear(in_features=510, out_features=512, bias=True)
+          (dropout): Dropout(p=0.2, inplace=False)
+        )
+        (ffn): FeedForward(
+          (linear1): Linear(in_features=512, out_features=2048, bias=True)
+          (dropout): Dropout(p=0.2, inplace=False)
+          (linear2): Linear(in_features=2048, out_features=512, bias=True)
+        )
+        (layernorm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (layernorm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (layernorm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.2, inplace=False)
+        (dropout2): Dropout(p=0.2, inplace=False)
+        (dropout3): Dropout(p=0.2, inplace=False)
+      )
+    )
+    (target_embedding): Embedding(31, 512, padding_idx=0)
+    (positional_encoding): PositionalEncoding()
+    (final_linear): Linear(in_features=512, out_features=31, bias=True)
+    (dropout): Dropout(p=0.2, inplace=False)
+  )
+)
